@@ -1,0 +1,9 @@
+# https://speedcamonline.ru/index.php?map_selected=Rus&double=&e0=on&e3=on&e12=on&e5=on&e2=on&e10=on&filter_id=&region=-1&cam_adress=&cam_N=&cam_E=&cam_source=&dir_type=-1&dir_lock=-1&sort=adress&submit=+%D4%E8%EB%FC%F2%F0%EE%E2%E0%F2%FC+
+source:
+    url: "https://speedcamonline.ru/igo/Rus&filter_id=&cam_name=&cam_adress=&cam_N=&cam_E=&region=-1&kind_list=1000,0,3,12,14,5,2,10"
+    database_dump: "output"
+
+output:
+    output_dir: "output"
+    idx_header_file: "res/0009.IDX"
+    url_header_file: "res/0010.URL"
