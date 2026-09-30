@@ -1,0 +1,48 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - run: go test ./...
+
+      - name: Build
+        run: |
+          set -e
+          VERSION="${GITHUB_REF_NAME}"
+          mkdir -p dist
+          for target in windows/amd64 darwin/amd64 darwin/arm64 linux/amd64 linux/arm64; do
+            GOOS="${target%/*}"; GOARCH="${target#*/}"
+            EXT=""; [ "$GOOS" = windows ] && EXT=".exe"
+            NAME="mk4speedcams-${VERSION}-${GOOS}-${GOARCH}"
+            mkdir -p "dist/$NAME/bin" "dist/$NAME/configs"
+            for cmd in speedcamgen poipatch; do
+              CGO_ENABLED=0 GOOS=$GOOS GOARCH=$GOARCH \
+                go build -trimpath -ldflags "-s -w" -o "dist/$NAME/bin/$cmd$EXT" "./cmd/$cmd"
+            done
+            cp configs/speedcamgen.yaml "dist/$NAME/configs/"
+            cp README.md "dist/$NAME/"
+            if [ "$GOOS" = windows ]; then
+              (cd dist && zip -qr "$NAME.zip" "$NAME")
+            else
+              tar -C dist -czf "dist/$NAME.tar.gz" "$NAME"
+            fi
+          done
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/*.zip dist/*.tar.gz --generate-notes
