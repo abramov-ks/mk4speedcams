@@ -5,5 +5,3 @@ source:
 
 output:
     output_dir: "output"
-    idx_header_file: "res/0009.IDX"
-    url_header_file: "res/0010.URL"

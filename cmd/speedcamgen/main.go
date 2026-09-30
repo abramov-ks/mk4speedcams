@@ -60,12 +60,12 @@ func (config Config) Run() int {
 	database = speedcamonline.SortDatabase(database)
 
 	generationResult, generationError := config.Output.GenerateFromDatabase(database)
-	if err != nil {
+	if generationError != nil {
 		log.Printf("Error on generation: %s", generationError)
 		return 127
 	}
 
-	log.Printf("Generation successful!\nTotal lines: %d\nIdx file path: %s\nUrl file path: %s", generationResult.RecordsCount, generationResult.IdxFile, generationResult.UrlFile)
+	log.Printf("Generation successful!\nTotal lines: %d\nPoison file path: %s\nIdx file path: %s\nUrl file path: %s", generationResult.RecordsCount, generationResult.PoisonFile, generationResult.IdxFile, generationResult.UrlFile)
 
 	return 0
 }
